@@ -8,6 +8,9 @@ from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
+
+#centrer le texte libraire requise
+from pptx.enum.text import PP_ALIGN
 # Ouvrir une boîte de dialogue pour sélectionner le fichier CSV
 Tk().withdraw()  # Cacher la fenêtre Tkinter principale
 file_path = askopenfilename(title="Sélectionner le fichier CSV", filetypes=[("CSV files", "*.csv")])
@@ -106,8 +109,7 @@ def add_team_slide(prs, team_name, team_data):
     # Ajouter un tableau
     table = slide.shapes.add_table(rows, cols, x, y, cx, cy).table
     
-    # Ajouter les bordures du tableau
-    set_table_borders(table)
+    # Ajouter les bordures du ta
     
     # Continuer à définir les données du tableau (comme dans ton code initial)
     # Ajouter les en-têtes de colonnes
@@ -137,30 +139,40 @@ def add_team_slide(prs, team_name, team_data):
                 for run in paragraph.runs:
                     run.font.size = font_size
                     run.font.color.rgb = black_color  # Texte noir
+        ##########margin none
+    for row in table.rows:
+        for cell in row.cells:
+            cell.margin_top = 0
+            cell.margin_bottom = 0
+            cell.margin_left = 0
+            cell.margin_right = 0
+            ####### centrer le texte
+    for row in table.rows:
+        for cell in row.cells:
+            for paragraph in cell.text_frame.paragraphs:
+                paragraph.alignment = PP_ALIGN.CENTER
 
+
+
+        #mettre en gras
+    for row in table.rows:
+        for cell in row.cells:
+            for paragraph in cell.text_frame.paragraphs:
+                for run in paragraph.runs:
+                    run.text = run.text.strip()  # Supprimer les espaces inutiles
+                    run.font.bold = True
     return slide
+
+
+
+
 # Fonction utilitaire pour définir les bordures des cellules
 from pptx.oxml import parse_xml
 from pptx.oxml.ns import nsdecls
 
 # Fonction utilitaire pour définir les bordures des cellules
 # Fonction utilitaire pour définir les bordures des cellules
-def set_table_borders(table):
-    for row in table.rows:
-        for cell in row.cells:
-            tc = cell._tc
-            tcPr = tc.get_or_add_tcPr()
-            
-            # Ajouter une bordure noire
-            border_xml = (
-                '<a:lnL w="12700" cap="flat" cmpd="sng" algn="ctr" {0}><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:lnL>'
-                '<a:lnR w="12700" cap="flat" cmpd="sng" algn="ctr" {0}><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:lnR>'
-                '<a:lnT w="12700" cap="flat" cmpd="sng" algn="ctr" {0}><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:lnT>'
-                '<a:lnB w="12700" cap="flat" cmpd="sng" algn="ctr" {0}><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:lnB>'
-            ).format(nsdecls('a'))
 
-            borders = parse_xml(border_xml)
-            tcPr.append(borders)
 # Liste des équipes uniques
 teams = df['Equipe'].unique()
 print(teams)

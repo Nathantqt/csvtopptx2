@@ -7,6 +7,12 @@ from pptx.dml.color import RGBColor
 from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+from pptx.util import Inches
+
+
+
+
+
 
 
 #centrer le texte libraire requise
@@ -200,7 +206,53 @@ for i, slide in enumerate(prs.slides):
 for slide in prs.slides:
     remove_empty_textboxes(slide)
 # Suppression de la 2ème diapositive (index 1 car l'index est basé sur 0)
-delete_slide(prs, 1)
+#delete_slide(prs, 1)
+
+
+
+
+###################################################################################
+
+
+
+
+
+
+def move_slide(presentation, old_index, new_index):
+    xml_slides = presentation.slides._sldIdLst  # Accéder à la liste des diapositives
+    slides = list(xml_slides)  # Convertir en liste pour manipulation
+    xml_slides.remove(slides[old_index])  # Supprimer la diapositive à l'ancienne position
+    xml_slides.insert(new_index, slides[old_index])  # Insérer la diapositive à la nouvelle position
+
+def delete_slide(presentation, index):
+    xml_slides = presentation.slides._sldIdLst  # Accéder à la liste des diapositives
+    slides = list(xml_slides)  # Convertir en liste pour manipulation
+    xml_slides.remove(slides[index])  # Supprimer la diapositive à l'index spécifié
+
+
+
+# Déplacer la diapositive de l'index 1 à la position 4
+move_slide(prs, 1, 3)
+
+
+################################################################
+
+
+
+
+
+
+# Supprimer la diapositive à l'index 2
+#delete_slide(prs, 2)
+
+
+
+
+
+
+
+
+
 # Sauvegarder la présentation PowerPoint dans le même répertoire que le fichier CSV
 output_path = os.path.join(directory_name, 'pipeline_presentation.pptx')
 prs.save(output_path)
